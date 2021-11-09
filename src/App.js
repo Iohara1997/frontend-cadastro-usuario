@@ -1,22 +1,25 @@
-import { useState } from "react";
+import { React, useState } from "react";
 import "./App.css";
 import Axios from "axios";
+import imgPage from "./imgPage.png";
 
 function App() {
   const [nome, setNome] = useState("");
   const [idade, setIdade] = useState(0);
   const [email, setEmail] = useState("");
 
-  const [listaUsuario, mostrarListaUsuario] = useState([]);
+  const [newEmail, setNewEmail] = useState("");
 
-  const adicionarUsuario = () => {
+  const [listUser, showListUser] = useState([]);
+
+  const addUser = () => {
     Axios.post("http://localhost:8080/create", {
       nome: nome,
       idade: idade,
       email: email,
     }).then(() => {
-      mostrarListaUsuario([
-        ...listaUsuario,
+      showListUser([
+        ...listUser,
         {
           nome: nome,
           idade: idade,
@@ -26,14 +29,47 @@ function App() {
     });
   };
 
-  const listarUsuarios = () => {
+  const listAllUsers = () => {
     Axios.get("http://localhost:8080/list").then((response) => {
-      mostrarListaUsuario(response.data);
+      showListUser(response.data);
+      listAllUsers();
     });
+  };
+
+  const updateUser = (id) => {
+    Axios.put("http://localhost:8080/update", { email: newEmail, id: id }).then(
+      (response) => {
+        showListUser(
+          listUser.map((val) => {
+            listAllUsers();
+            return val.id === id
+              ? {
+                  id: val.id,
+                  nome: val.nome,
+                  idade: val.idade,
+                  email: val.newEmail,
+                }
+              : val;
+          })
+        );
+      }
+    );
+  };
+
+  const deleteUser = (id) => {
+    Axios.delete(`http://localhost:8080/delete/${id}`).then((response)=>{
+      showListUser(listUser.filter((val)=> {
+        return val.id !== id
+      }))
+    })
   };
 
   return (
     <div className="App">
+      <p className="title">Cadastro de usuários</p>
+      <div className="img">
+        <img src={imgPage} alt="Logo" />
+      </div>
       <div className="form">
         <label>Nome: </label>
         <input
@@ -56,18 +92,43 @@ function App() {
             setEmail(event.target.value);
           }}
         />
-        <button onClick={adicionarUsuario}>Novo Usuário</button>
+        <button onClick={addUser}>Novo Usuário</button>
       </div>
-      <hr />
-      <div className="listar">
-        <button onClick={listarUsuarios}>Listar Usuários</button>
+      <div className="list">
+        <button onClick={listAllUsers}>Listar Usuários</button>
 
-        {listaUsuario.map((val, key) => {
+        {listUser.map((val, key) => {
           return (
-            <div className="usuarioCard">
+            <div className="userCard">
               <h3>Usuário: {val.nome} </h3>
               <h3>Idade: {val.idade} </h3>
               <h3>E-mail: {val.email} </h3>
+              <div className="atualizarCard">
+                <input
+                  type="text"
+                  placeholder="E-mail"
+                  onChange={(event) => {
+                    setNewEmail(event.target.value);
+                  }}
+                />
+                <button
+                  onClick={() => {
+                    updateUser(val.id);
+                  }}
+                  className="editButton"
+                >
+                  Atualizar
+                </button>
+                <button
+                  onClick={() => {
+                    deleteUser(val.id);
+                  }}
+                  className="editButton"
+                >
+                  {" "}
+                  Remover
+                </button>
+              </div>
             </div>
           );
         })}
