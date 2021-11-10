@@ -11,6 +11,14 @@
   width: 100%;
   justify-content: center;
   align-items: center;
+  font-size: 20px;
+  background-color: rgb(24, 83, 172);
+  height: 300px;
+  width: 500px;
+  margin-left: 32.5%;
+  border-radius: 10px;
+  background: rgb(83, 138, 187);
+  border: 1px solid black;
 }
 
 .form input {
@@ -25,6 +33,7 @@ button {
   height: 40px;
   margin-top: 15px;
   margin-bottom: 15px;
+  background-color: rgb(166, 172, 199);
 }
 
 button:hover {
@@ -57,7 +66,7 @@ h3 {
 .editButton { 
   width: 75px;
   height: 22px;
-  margin: 15px;
+  margin: 8px;
 }
 
 .img {
@@ -74,3 +83,15 @@ h3 {
   color: rgb(42, 42, 105);
   font-weight: bold;
 }
+
+.formEdit {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+}
+
+.formEdit input {
+  width: 177px;
+  margin-top: 5px;
+}
+
