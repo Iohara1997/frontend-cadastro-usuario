@@ -2,6 +2,8 @@ import { React, useState } from "react";
 import "./App.css";
 import Axios from "axios";
 import imgPage from "./imgPage.png";
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+
 
 function App() {
   const [nome, setNome] = useState("");
@@ -13,6 +15,8 @@ function App() {
   const [newNome, setNewNome] = useState("");
 
   const [listUser, showListUser] = useState([]);
+
+  
 
   const addUser = () => {
     Axios.post("http://localhost:8080/create", {
@@ -73,6 +77,13 @@ function App() {
 
   return (
     <div className="App">
+
+      <header>
+        <img src={imgPage} className="App-logo" alt="logo" />
+        <h1>We now have Auth!</h1>
+      </header>
+      <AmplifySignOut />
+
       <p className="title">Cadastro de usuários</p>
       <div className="img">
         <img src={imgPage} alt="Logo" />
@@ -162,4 +173,4 @@ function App() {
   );
 }
 
-export default App;
+export default withAuthenticator(App);
