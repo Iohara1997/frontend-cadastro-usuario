@@ -7,13 +7,14 @@ import { listTodos } from "./graphql/queries";
 import {
   createTodo as createTodoMutation,
   deleteTodo as deleteTodoMutation,
-  updateTodo as updateTodoMutation
+  updateTodo as updateTodoMutation,
 } from "./graphql/mutations";
 
 const initialFormState = { nome: "", idade: "", email: "" };
+const arrayTodo = [];
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  var [todos, setTodos] = useState([]);
   const [formData, setFormData] = useState(initialFormState);
 
   useEffect(() => {
@@ -45,13 +46,18 @@ function App() {
     });
   }
 
-  async function updateTodo({ id }) {
-    const newTodosArray = todos.filter((todo) => todo.id !== id);
-    setTodos([...todos, newTodosArray]);
+  async function updateTodo({ id }, array) {
+    const newTodosArray = {
+      id: id,
+      nome: array[0],
+      idade: array[1],
+      email: array[2]
+    }
     await API.graphql({
       query: updateTodoMutation,
-      variables: { input: { id } },
+      variables: { input:  newTodosArray },
     });
+    document.location.reload();
   }
 
   return (
@@ -101,21 +107,12 @@ function App() {
                 <h3>Usuário: {val.nome} </h3>
                 <h3>Idade: {val.idade} </h3>
                 <h3>E-mail: {val.email} </h3>
-                <button
-                  onClick={() => {
-                    deleteTodo(val);
-                  }}
-                  className="editButton"
-                >
-                  {" "}
-                  Remover
-                </button>
                 <div className="atualizarCard">
                   <input
                     type="text"
                     placeholder="Nome"
                     onChange={(event) => {
-                      setTodos({ ...todos, nome: event.target.value });
+                      arrayTodo[0] = event.target.value;
                     }}
                   />
                   <div className="formEdit">
@@ -123,20 +120,20 @@ function App() {
                       type="number"
                       placeholder="Idade"
                       onChange={(event) => {
-                        setTodos({ ...todos, idade: event.target.value });
+                        arrayTodo[1] = event.target.value;
                       }}
                     />
                     <input
                       type="text"
                       placeholder="E-mail"
                       onChange={(event) => {
-                        setTodos({ ...todos, email: event.target.value });
+                        arrayTodo[2] = event.target.value;
                       }}
                     />
                   </div>
                   <button
                     onClick={() => {
-                      updateTodo(val);
+                      updateTodo(val, arrayTodo);
                     }}
                     className="editButton"
                   >
