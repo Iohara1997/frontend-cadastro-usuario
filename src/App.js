@@ -1,83 +1,61 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import "./App.css";
-import Axios from "axios";
+import { API } from "aws-amplify";
 import imgPage from "./imgPage.png";
-import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+import { withAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
+import { listTodos } from "./graphql/queries";
+import {
+  createTodo as createTodoMutation,
+  deleteTodo as deleteTodoMutation,
+  updateTodo as updateTodoMutation
+} from "./graphql/mutations";
 
+const initialFormState = { nome: "", idade: "", email: "" };
 
 function App() {
-  const [nome, setNome] = useState("");
-  const [idade, setIdade] = useState(0);
-  const [email, setEmail] = useState("");
+  const [todos, setTodos] = useState([]);
+  const [formData, setFormData] = useState(initialFormState);
 
-  const [newEmail, setNewEmail] = useState("");
-  const [newIdade, setNewIdade] = useState(0);
-  const [newNome, setNewNome] = useState("");
+  useEffect(() => {
+    fetchTodos();
+  }, []);
 
-  const [listUser, showListUser] = useState([]);
+  async function fetchTodos() {
+    const apiData = await API.graphql({ query: listTodos });
+    const todosData = apiData.data.listTodos.items;
+    setTodos(todosData);
+  }
 
-  
-
-  const addUser = () => {
-    Axios.post("http://localhost:8080/create", {
-      nome: nome,
-      idade: idade,
-      email: email,
-    }).then(() => {
-      showListUser([
-        ...listUser,
-        {
-          nome: nome,
-          idade: idade,
-          email: email,
-        },
-      ]);
+  async function createTodo() {
+    if (!formData.nome || !formData.idade || !formData.email) return;
+    await API.graphql({
+      query: createTodoMutation,
+      variables: { input: formData },
     });
-  };
+    setTodos([...todos, formData]);
+    setFormData(initialFormState);
+  }
 
-  const listAllUsers = () => {
-    Axios.get("http://localhost:8080/list").then((response) => {
-      showListUser(response.data);
-      listAllUsers();
+  async function deleteTodo({ id }) {
+    const newTodosArray = todos.filter((todo) => todo.id !== id);
+    setTodos(newTodosArray);
+    await API.graphql({
+      query: deleteTodoMutation,
+      variables: { input: { id } },
     });
-  };
+  }
 
-  const updateUser = (id) => {
-    Axios.put("http://localhost:8080/update", {
-      nome: newNome,
-      email: newEmail,
-      idade: newIdade,
-      id: id,
-    }).then((response) => {
-      showListUser(
-        listUser.map((val) => {
-          listAllUsers();
-          return val.id === id
-            ? {
-                id: val.id,
-                nome: val.newNome,
-                idade: val.newIdade,
-                email: val.newEmail,
-              }
-            : val;
-        })
-      );
+  async function updateTodo({ id }) {
+    const newTodosArray = todos.filter((todo) => todo.id !== id);
+    setTodos([...todos, newTodosArray]);
+    await API.graphql({
+      query: updateTodoMutation,
+      variables: { input: { id } },
     });
-  };
-
-  const deleteUser = (id) => {
-    Axios.delete(`http://localhost:8080/delete/${id}`).then((response) => {
-      showListUser(
-        listUser.filter((val) => {
-          return val.id !== id;
-        })
-      );
-    });
-  };
+  }
 
   return (
     <div className="App">
-
       <header>
         <img src={imgPage} className="App-logo" alt="logo" />
         <h1>We now have Auth!</h1>
@@ -94,40 +72,50 @@ function App() {
           <input
             type="text"
             onChange={(event) => {
-              setNome(event.target.value);
+              setFormData({ ...formData, nome: event.target.value });
             }}
+            value={formData.nome}
           />
           <label>Idade: </label>
           <input
             type="number"
             onChange={(event) => {
-              setIdade(event.target.value);
+              setFormData({ ...formData, idade: event.target.value });
             }}
+            value={formData.idade}
           />
           <label>E-mail: </label>
           <input
             type="text"
             onChange={(event) => {
-              setEmail(event.target.value);
+              setFormData({ ...formData, email: event.target.value });
             }}
+            value={formData.email}
           />
-          <button onClick={addUser}>Novo Usuário</button>
+          <button onClick={createTodo}>Novo Usuário</button>
         </div>
-        <div className="list">
-          <button onClick={listAllUsers}>Listar Usuários</button>
-
-          {listUser.map((val, key) => {
+        <div>
+          {todos.map((val) => {
             return (
               <div className="userCard">
                 <h3>Usuário: {val.nome} </h3>
                 <h3>Idade: {val.idade} </h3>
                 <h3>E-mail: {val.email} </h3>
+                <button
+                  onClick={() => {
+                    deleteTodo(val);
+                  }}
+                  className="editButton"
+                >
+                  {" "}
+                  Remover
+                </button>
                 <div className="atualizarCard">
                   <input
                     type="text"
                     placeholder="Nome"
                     onChange={(event) => {
-                      setNewNome(event.target.value);
+                      setTodos({ ...todos, nome: event.target.value });
                     }}
                   />
                   <div className="formEdit">
@@ -135,20 +123,20 @@ function App() {
                       type="number"
                       placeholder="Idade"
                       onChange={(event) => {
-                        setNewIdade(event.target.value);
+                        setTodos({ ...todos, idade: event.target.value });
                       }}
                     />
                     <input
                       type="text"
                       placeholder="E-mail"
                       onChange={(event) => {
-                        setNewEmail(event.target.value);
+                        setTodos({ ...todos, email: event.target.value });
                       }}
                     />
                   </div>
                   <button
                     onClick={() => {
-                      updateUser(val.id);
+                      updateTodo(val);
                     }}
                     className="editButton"
                   >
@@ -156,7 +144,7 @@ function App() {
                   </button>
                   <button
                     onClick={() => {
-                      deleteUser(val.id);
+                      deleteTodo(val);
                     }}
                     className="editButton"
                   >
