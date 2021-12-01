@@ -1,39 +1,83 @@
 .App {
   display: flex;
+  height: 100vh;
+  margin-top: 0%;
   flex-direction: column;
+  justify-content:top;
+}
+
+body {
+  background-image: linear-gradient(to bottom, white, rgb(82, 93, 145));
+  margin: 0;
+  height: 150vh;
+}
+
+.formTopo {
+  display: flex;
+  position: relative;
+  height: 10vh;
+  flex-direction: row;
   justify-content: center;
-  background-color: aliceblue;
+  background-color:rgb(13, 32, 87);
+  align-items: center;
 }
 
 .form {
-  display: flex;
-  flex-direction: column;
   width: 100%;
-  justify-content: center;
-  align-items: center;
   font-size: 20px;
-  background-color: rgb(24, 83, 172);
   height: 300px;
-  width: 500px;
-  margin-left: 32.5%;
+  width: 100%;
+  margin-left: 0%;
   border-radius: 10px;
-  background: rgb(83, 138, 187);
-  border: 1px solid black;
 }
 
-.form input {
-  width: 300px;
-  height: 20px;
-  font-size: 15px;
+.container {
+  margin-top: 0px;
+}
+
+.formCard {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 20vh;
+}
+
+input {
+  margin-top: 5px;
+  margin-left:55vh;
+  width: 40%;
+  height: 50%;
+  font-size: 18px;
   padding-left: 10px;
 }
 
 button {
-  width: 150px;
+  width: 41%;
   height: 40px;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  background-color: rgb(166, 172, 199);
+  margin-top: 1px;
+  margin-bottom: 1px;
+  font-family: arial;
+  font-size:14px;
+  text-transform: uppercase;
+  font-weight:700;
+  border:none;
+  padding:10px;
+  cursor: pointer;
+  display:inline-block;
+  text-decoration: none;
+  margin-left: 55vh;
+}
+
+.btn-green{
+  margin-top: 0.5%;
+  background:green;
+  color:#fff;
+  box-shadow:0 5px 0 #006000;
+}
+
+.btn-green:hover{
+  background:#006000;
+  box-shadow:0 5px 0 #003f00;
 }
 
 button:hover {
@@ -43,7 +87,9 @@ button:hover {
 .list {
   display: flex;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 10%;
 }
 
 .userCard {
@@ -54,9 +100,10 @@ button:hover {
   padding: 5px;
   margin: 10px;
   background-color: rgb(151, 174, 247);
-  border: 1px solid black;
+  border: 1px solid rgb(94, 91, 91);
   border-radius: 10px;
   font-family: 'Courier New', Courier, monospace; 
+  margin-left: 35px;
 }
 
 h3 {
@@ -64,23 +111,54 @@ h3 {
 }
 
 .editButton { 
-  width: 75px;
-  height: 22px;
+  width: 50px;
+  height: 30px;
   margin: 8px;
+  margin-left: 37px;
+  font-size: 20px;
+  margin-top: 2.5%;
+  background:rgb(0, 81, 128);
+  color:#fff;
+  border-radius: 30px;
+  padding: 5px;
+}
+
+.editButton:hover {
+  background-color: rgb(50, 92, 184);
+  color: white;
+}
+
+.removeButton { 
+  width: 50px;
+  height: 30px;
+  margin: 8px;
+  font-size: 20px;
+  margin-top: 2.5%;
+  background:rgb(128, 0, 0);
+  color:#fff;
+  border-radius: 20px;
+  padding: 5px;
+}
+
+.removeButton:hover {
+  background-color: rgb(197, 68, 68);
+  color: white;
 }
 
 .img {
   width: 40px;
-  height: 40px;
-  margin: 10px;
+  position: absolute;
+  top: 15vh;
+  left: 45%;
 }
 
 .title {
-  font-family: 'Courier New', Courier, monospace; 
+  font-family: 'Calibri', Calibri, monospace; 
   display: flex;
-  justify-content: center;
+  margin-left: 2%;
+  justify-content: left;
   font-size: 30px;
-  color: rgb(42, 42, 105);
+  color: rgb(189, 205, 250);
   font-weight: bold;
 }
 
@@ -93,5 +171,143 @@ h3 {
 .formEdit input {
   width: 177px;
   margin-top: 5px;
+  margin-left: -1%;
 }
 
+.buttonSignOut { 
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  transition-duration: 0.4s;
+  background-color: rgb(151, 174, 247);
+  color: white;
+  font-size: 16px;
+  border: none;
+  font-weight: bold;
+  width: 130px;
+  height: 35px;
+  margin-left: 55%;
+}
+
+.buttonSignOut:hover {
+  background-color: rgb(88, 88, 129);
+  color: white;
+}
+
+@media only screen and (max-device-width: 500px) {
+  .title {
+    font-size: 10px;
+    margin-top: 40px;
+    margin-bottom: 0px;
+  }
+
+  .buttonSignOut { 
+    width: 60px;
+    height: 10px;
+    font-size: 6px;
+    padding: 4;
+  }
+
+  .formTopo {
+    display: flex;
+    position: relative;
+    height: 3vh;
+    width: 7vh;
+    flex-direction: row;
+    justify-content: center;
+    background-color:rgb(13, 32, 87);
+    align-items: center;
+  }
+  
+  body {
+    width: 150px;
+  }
+
+  img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .userCard {
+    width: 100px;
+    margin-left: 10px;
+  }
+
+
+}
+
+@media only screen and (min-device-width: 1920px) {
+  img {
+    width: 250px;
+    height: 250px;
+  }
+
+  body {
+    height: 280vh;
+  }
+
+  .title {
+    font-size: 50px;
+  }
+
+  .form {
+    height: 400px;
+    width: 700px;
+    font-size: 35px;
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+
+  .form input {
+    width: 700px;
+    height: 60px;
+    font-size: 30px;
+    padding-left: 30px;
+  }
+
+  .list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 700vh;
+  }
+
+  .userCard {
+    height: 400px;
+    width: 500px;
+  }
+  .buttonSignOut {
+    font-size: 25px;
+    width: 200px;
+    height: 50px;
+  }
+
+  button { 
+    width: 736px;
+    height: 60px;
+    font-size: 20px;
+  }
+
+  .editButton {
+    width: 95px;
+    height: 40px;
+    margin: 8px;
+  }
+
+  .removeButton {
+    width: 95px;
+    height: 40px;
+    margin: 8px;
+  }
+
+  .formEdit {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+  }
+  
+  .formEdit input {
+    width: 190px;
+    height: 20px;
+    margin-top: 5px;
+    margin-left: 20px;
+  }
+}
